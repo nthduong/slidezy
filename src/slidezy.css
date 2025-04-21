@@ -1,0 +1,46 @@
+* {
+    box-sizing: border-box;
+}
+
+.slidezy-wrapper {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+.slidezy-track {
+    display: flex;
+    transition: ease 0.3s;
+}
+
+.slide {
+    flex-shrink: 0;
+    flex-grow: 0;
+    flex-wrap: nowrap;
+    padding: 30px;
+    text-align: center;
+}
+
+.slide:nth-child(1) {
+    background-color: red;
+}
+.slide:nth-child(2) {
+    background-color: rebeccapurple;
+}
+.slide:nth-child(3) {
+    background-color: orange;
+}
+
+.slidezy-prev {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0;
+}
+
+.slidezy-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 0;
+}

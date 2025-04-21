@@ -18,7 +18,10 @@
 
         <script src="./src/slidezy.js"></script>
         <script>
-            const mySlider = new Slidezy("my-slider");
+            const mySlider = new Slidezy("#my-slider", {
+                items: 1,
+                loop: true,
+            });
         </script>
     </body>
 </html>
