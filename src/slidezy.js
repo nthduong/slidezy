@@ -75,6 +75,8 @@ Slidezy.prototype.move = function (step) {
             const maxIndex = this.slides.length - this.opt.items;
             if (this.currentIndex <= 0) {
                 this.currentIndex = maxIndex - this.opt.items;
+            } else if (this.currentIndex >= maxIndex) {
+                this.currentIndex = this.opt.items;
             }
             this._updatePosition(true);
             this._isAnimating = false;
