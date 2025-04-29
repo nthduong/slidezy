@@ -67,12 +67,16 @@ Slidezy.prototype._createNavigation = function () {
 Slidezy.prototype.move = function (step) {
     if (this._isAnimating) return;
     this._isAnimating = true;
+
+    const maxIndex = this.slides.length - this.opt.items;
+
+    this.currentIndex = Math.min(
+        Math.max(this.currentIndex + step, 0),
+        maxIndex
+    );
+
     if (this.opt.loop) {
-        this.currentIndex =
-            (this.currentIndex + step + this.slides.length) %
-            this.slides.length;
         this.slideTrack.ontransitionend = () => {
-            const maxIndex = this.slides.length - this.opt.items;
             if (this.currentIndex <= 0) {
                 this.currentIndex = maxIndex - this.opt.items;
             } else if (this.currentIndex >= maxIndex) {
@@ -81,15 +85,7 @@ Slidezy.prototype.move = function (step) {
             this._updatePosition(true);
             this._isAnimating = false;
         };
-    } else {
-        this.currentIndex = Math.min(
-            Math.max(this.currentIndex + step, 0),
-            this.slides.length - this.opt.items
-        );
     }
-    console.log(this.currentIndex);
-    console.log(this.slides.length);
-
     this._updatePosition();
 };
 
