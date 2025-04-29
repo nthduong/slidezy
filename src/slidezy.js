@@ -13,8 +13,9 @@ function Slidezy(selector, options = {}) {
         options
     );
     this.slides = Array.from(this.container.children);
-    this.currentIndex = 0;
+    this.currentIndex = this.opt.loop ? this.opt.items : 0;
     this._init();
+    this._updatePosition();
 }
 
 Slidezy.prototype._init = function () {
@@ -27,8 +28,19 @@ Slidezy.prototype._createTrack = function () {
     this.slideTrack = document.createElement("div");
     this.slideTrack.classList.add("slidezy-track");
 
+    if (this.opt.loop) {
+        const cloneHead = this.slides
+            .slice(-this.opt.items)
+            .map((node) => node.cloneNode(true));
+
+        const cloneTail = this.slides
+            .slice(0, this.opt.items)
+            .map((node) => node.cloneNode(true));
+
+        this.slides = cloneHead.concat(this.slides.concat(cloneTail));
+    }
     this.slides.forEach((slide) => {
-        slide.className = "slide";
+        slide.classList.add("slide");
         slide.style.width = `${100 / this.opt.items}%`;
         this.slideTrack.appendChild(slide);
     });
@@ -53,10 +65,20 @@ Slidezy.prototype._createNavigation = function () {
 };
 
 Slidezy.prototype.move = function (step) {
+    if (this._isAnimating) return;
+    this._isAnimating = true;
     if (this.opt.loop) {
         this.currentIndex =
             (this.currentIndex + step + this.slides.length) %
             this.slides.length;
+        this.slideTrack.ontransitionend = () => {
+            const maxIndex = this.slides.length - this.opt.items;
+            if (this.currentIndex <= 0) {
+                this.currentIndex = maxIndex - this.opt.items;
+            }
+            this._updatePosition(true);
+            this._isAnimating = false;
+        };
     } else {
         this.currentIndex = Math.min(
             Math.max(this.currentIndex + step, 0),
@@ -65,6 +87,12 @@ Slidezy.prototype.move = function (step) {
     }
     console.log(this.currentIndex);
     console.log(this.slides.length);
+
+    this._updatePosition();
+};
+
+Slidezy.prototype._updatePosition = function (instant = false) {
+    this.slideTrack.style.transition = instant ? "none" : "transform ease 0.3s";
     const offset = -(this.currentIndex * (100 / this.opt.items));
     this.slideTrack.style.transform = `translateX(${offset}%)`;
 };
